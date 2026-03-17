@@ -1,0 +1,6 @@
+sku,item_name,category,price,stock_count
+SKU-001,Data Cable,Electronics,15.99,150
+SKU-002,Ergonomic Mouse,Hardware,45.50,45
+SKU-003,Mechanical Keyboard,Hardware,89.00,22
+SKU-004,USB-C Hub,Electronics,35.00,0
+SKU-005,Monitor Stand,Office,29.99,10

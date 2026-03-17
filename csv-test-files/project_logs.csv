@@ -1,0 +1,5 @@
+log_id,project_name,status,hours_logged,last_updated
+101,Singer Protocol,In Progress,45.5,2026-03-10
+102,Medigy AI,Planning,12.0,2026-03-12
+103,Data Migration,Completed,88.2,2026-03-14
+104,API Integration,Testing,25.0,2026-03-15

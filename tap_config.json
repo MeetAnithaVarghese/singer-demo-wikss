@@ -1,0 +1,25 @@
+{
+    "files": [
+        {
+            "entity": "customers",
+            "path": "D:/Anitha_Varghese/singer-demo/csv-test-files/customers.csv",
+            "keys": [
+                "id"
+            ]
+        },
+        {
+            "entity": "inventory",
+            "path": "D:/Anitha_Varghese/singer-demo/csv-test-files/inventory.csv",
+            "keys": [
+                "sku"
+            ]
+        },
+        {
+            "entity": "project_logs",
+            "path": "D:/Anitha_Varghese/singer-demo/csv-test-files/project_logs.csv",
+            "keys": [
+                "log_id"
+            ]
+        }
+    ]
+}
