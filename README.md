@@ -1,12 +1,6 @@
 
 ### 📊 Singer.io CSV to PostgreSQL Sync
 
-Here is your updated `README.md`. I have incorporated the latest fixes, including the permanent environment pathing and the integrated Python 3.11 patch that simplifies the file structure.
-
----
-
-## 📊 Singer.io CSV to PostgreSQL Sync
-
 An automated ingestion pipeline built with the **Singer.io** specification to move data from local CSV folders into a structured **PostgreSQL** schema.
 
 ### 🛠 Installation & Setup
@@ -87,4 +81,90 @@ SELECT * FROM singer_data_ingest.project_logs;
 ```
 
 ---
+
+
+## 📊 Singer.io MySQL to PostgreSQL Sync
+
+An automated data engineering pipeline using the **Singer.io** specification to migrate structured relational data from **MySQL** to **Postgres**.
+
+### 🛠 Installation & Setup
+
+#### 1. Core Dependencies
+Install the specific Tap and Target required for this relational sync:
+```powershell
+# Install the MySQL Source (Tap)
+python -m pip install meltanolabs-tap-mysql
+
+# Install the Postgres Destination (Target)
+# installed before 
+python -m pip install target-postgres --no-deps
+
+# Required database drivers and support libraries
+python -m pip install psycopg2-binary psycopg2
+python -m pip install singer-python
+```
+
+#### 2. Environment Verification
+Confirm your Scripts folder is in your PATH so the executables are recognized:
+```powershell
+# Add Python Scripts to current session if 'tap-mysql' is not found
+$env:Path += ";C:\Users\Anitha\AppData\Local\Programs\Python\Python311\Scripts"
+```
+
+---
+
+### 🔧 Critical Fixes & Architecture
+
+#### 1. Python 3.11 `MutableMapping` Patch
+`target-postgres` relies on `collections.MutableMapping`, which was moved to `collections.abc` in Python 3.10. Our orchestrator script applies a "Live Patch" by running the target via `python -c` to inject this compatibility fix into the sub-process.
+
+#### 2. Stream ID Sanitization (Hyphen Fix)
+MySQL often exports streams with names like `database-table`. PostgreSQL does not allow hyphens in table names. 
+* **The Problem:** `CREATE TABLE schema.database-table` fails with a `SyntaxError`.
+* **The Fix:** Our script dynamically modifies the `catalog.json` to strip the database prefix and replace hyphens with underscores (e.g., `singer_demonstration-products` becomes `products`).
+
+---
+
+### 📂 Required Configuration Files
+
+The orchestrator manages these files in a temporary directory to keep your workspace clean, but you should ensure your credentials match:
+
+| File | Key Settings |
+| :--- | :--- |
+| **`mysql_config.json`** | `host`, `port`, `user`, `password`, `database` |
+| **`postgres_config.json`** | `postgres_host`, `postgres_port`, `postgres_user`, `postgres_schema` |
+| **`catalog.json`** | Generated automatically via `--discover` |
+
+---
+
+### ⚡ Running the Sync
+
+The main orchestrator handles discovery, catalog sanitization, and the piped execution:
+
+```powershell
+python demo_mysql_to_postgres.py
+```
+
+**What happens under the hood:**
+1.  **Discovery:** `tap-mysql` scans your MySQL database.
+2.  **Sanitization:** The script filters out `performance_schema` tables and renames your target tables for Postgres compliance.
+3.  **Sync:** `tap-mysql` pipes data to `target-postgres` using the Python 3.11 compatibility wrapper.
+
+---
+
+### 🔍 Data Verification
+Once you see the `[★] SUCCESS` message, verify your data in **pgAdmin** or **psql**:
+
+```sql
+-- Check your new schema
+SET search_path TO mysql_to_postgres;
+
+-- Verify record counts
+SELECT count(*) FROM products;
+SELECT count(*) FROM suppliers;
+SELECT count(*) FROM sales_pipeline;
+```
+
+---
+
 

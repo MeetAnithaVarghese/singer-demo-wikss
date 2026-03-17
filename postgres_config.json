@@ -1,0 +1,8 @@
+{
+    "host": "localhost",
+    "port": 5432,
+    "dbname": "singer_demo_db",
+    "user": "postgres",
+    "password": "Netspective",
+    "default_target_schema": "mysql_to_postgres"
+}
